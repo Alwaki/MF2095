@@ -34,13 +34,11 @@ void average_temperature(short temperature[], short length)
       total = total + temperature[i];
     }
     float average = (float) total / (float) length;
-    printf("Average Temperature: %.2f", average);
-    printf("\n");
+    printf("Average Temperature: %.2f\n", average);
   }
   else
   {
-    printf("Average Temperature: N/A");
-    printf("\n");
+    printf("Average Temperature: N/A\n");
   }
 
 }
@@ -57,13 +55,11 @@ void min_temperature(short temperature[], short length)
         min = temperature[i];
       }
     }
-    printf("Minimum Temperature: %d", min);
-    printf("\n");
+    printf("Minimum Temperature: %d\n", min);
   }
   else
   {
-    printf("Minimum Temperature: N/A");
-    printf("\n");
+    printf("Minimum Temperature: N/A\n");
   }
 }
 
@@ -79,24 +75,20 @@ void max_temperature(short temperature[], short length)
         max = temperature[i];
       }
     }
-    printf("Maximum Temperature: %d", max);
-    printf("\n");
+    printf("Maximum Temperature: %d\n", max);
   }
   else
   {
-    printf("Maximum Temperature: N/A");
-    printf("\n");
+    printf("Maximum Temperature: N/A\n");
   }
 }
 
 void display_log(short temperature[], short length)
 {
-  printf("Log: %d entries", length);
-  printf("\n");
+  printf("Log: %d entries\n", length);
   for(short i = 0; i < length; i++)
   {
-    printf("Temperature: %d", temperature[i]);
-    printf("\n");
+    printf("Temperature: %d\n", temperature[i]);
   }
 }
 
@@ -120,15 +112,13 @@ int main(int argc, char *argv[])
         if(current_log_usage < 10)
         {
           syntax_fix:;
-          printf("Received Temperature: %d", data);
-          printf("\n");
+          printf("Received Temperature: %d\n", data);
           temperature[current_log_usage] = data;
           current_log_usage++;
         }
         else
         {
-          printf("Log Full");
-          printf("\n");
+          printf("Log Full\n");
         }
         break;
 
@@ -150,16 +140,13 @@ int main(int argc, char *argv[])
 
       case(6):
         running = 0;
-        printf("Exiting...");
-        printf("\n");
+        printf("Exiting...\n");
         break;
 
       default:
-        printf("Input Error");
-        printf("\n");
+        printf("Input Error\n");
         break;
     }
 
   }
 }
-
