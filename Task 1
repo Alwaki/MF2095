@@ -1,0 +1,159 @@
+/*
+Course:       MF2095
+Task:         Assignment 1
+Description:  Simple temperature input/output storage array
+Author:       Alexander Wallén Kiessling
+
+for further details, see problem description. Note that the use of scanf is not recommended
+for any real system, as overflow is very possible.
+*/
+
+// SETUP
+// --------------------
+
+// import libraries
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+// global declarations
+#define log_size 10 //the size of the temperature array
+short current_log_usage = 0; //the current amount of occupied slots in log array
+short temperature[log_size]; //temperature array
+
+// DEFINITIONS
+// --------------------
+
+void average_temperature(short temperature[], short length)
+{
+  if(length > 0)
+  {
+    short total = 0;
+    for(short i = 0; i < length; i++)
+    {
+      total = total + temperature[i];
+    }
+    float average = (float) total / (float) length;
+    printf("Average Temperature: %.2f", average);
+    printf("\n");
+  }
+  else
+  {
+    printf("Average Temperature: N/A");
+    printf("\n");
+  }
+
+}
+
+void min_temperature(short temperature[], short length)
+{
+  if(length > 0)
+  {
+    short min = 32000;
+    for(short i = 0; i < length; i++)
+    {
+      if(temperature[i] < min)
+      {
+        min = temperature[i];
+      }
+    }
+    printf("Minimum Temperature: %d", min);
+    printf("\n");
+  }
+  else
+  {
+    printf("Minimum Temperature: N/A");
+    printf("\n");
+  }
+}
+
+void max_temperature(short temperature[], short length)
+{
+  if(length > 0)
+  {
+    short max = 0;
+    for(short i = 0; i < length; i++)
+    {
+      if(temperature[i] > max)
+      {
+        max = temperature[i];
+      }
+    }
+    printf("Maximum Temperature: %d", max);
+    printf("\n");
+  }
+  else
+  {
+    printf("Maximum Temperature: N/A");
+    printf("\n");
+  }
+}
+
+void display_log(short temperature[], short length)
+{
+  printf("Log: %d entries", length);
+  printf("\n");
+  for(short i = 0; i < length; i++)
+  {
+    printf("Temperature: %d", temperature[i]);
+    printf("\n");
+  }
+}
+
+int main(int argc, char *argv[])
+{
+  short running = 1; //set running status to true
+  while(running != 0)
+  {
+    char input_string[50]; //the array for input commands
+    scanf("%s", input_string);
+    switch(input_string[0])
+    {
+      case('T'):
+        if(current_log_usage < 10)
+        {
+          syntax_fix:;
+          int temp_i = atoi(input_string + 1);
+          printf("Received Temperature: %d", temp_i);
+          printf("\n");
+          temperature[current_log_usage] = temp_i;
+          current_log_usage++;
+        }
+        else
+        {
+          printf("Log Full");
+          printf("\n");
+        }
+        break;
+
+      case('A'):
+        average_temperature(temperature, current_log_usage);
+        break;
+
+      case('N'):
+        min_temperature(temperature, current_log_usage);
+        break;
+
+      case('X'):
+        max_temperature(temperature, current_log_usage);
+        break;
+
+      case('L'):
+        display_log(temperature, current_log_usage);
+        break;
+
+      case('Q'):
+        running = 0;
+        printf("Exiting...");
+        printf("\n");
+        break;
+
+      default:
+        printf("Input Error");
+        printf("\n");
+        break;
+    }
+
+  }
+}
