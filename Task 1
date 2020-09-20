@@ -5,7 +5,7 @@ Description:  Simple temperature input/output storage array
 Author:       Alexander Wallén Kiessling
 
 for further details, see problem description. Note that the use of scanf is not recommended
-for any real system, as overflow is very possible. \n is printed as additional line for visibility.
+for any real system, as overflow is very possible. \n is printed as additional line for visibility, will change in later tasks.
 */
 
 // SETUP
