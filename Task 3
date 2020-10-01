@@ -1,7 +1,7 @@
 /*
 Course:       MF2095
 Task:         Assignment 3
-Description:  Simple temperature input/output storage array with hex input.
+Description:  Simple temperature and humidity input/output storage array with hex input.
 Author:       Alexander Wallén Kiessling
 
 for further details, see problem description
