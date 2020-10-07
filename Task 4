@@ -1,0 +1,257 @@
+/*
+Course:       MF2095
+Task:         Assignment 3
+Description:  Simple temperature and humidity input/output storage array with hex input.
+              Uses dynamic array.
+Author:       Alexander Wallén Kiessling
+
+for further details, see problem description
+*/
+
+// SETUP
+// --------------------
+
+// import libraries
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
+
+// global declarations
+short current_log_usage = 0; //the current amount of occupied slots in log array
+short current_log_size = 0;  //current size of the logs
+short * temperature;         //temperature array
+short * humidity;            //humidity array
+short LogIncrement;          //specify the increment size for memory allocation
+
+// DEFINITIONS
+// --------------------
+
+void average_temperature_humidity(short* temperature, short* humidity, short length)
+{
+  if(length > 0)
+  {
+    //temperature
+    short total = 0;
+    for(short i = 0; i < length; i++)
+    {
+      total = total + temperature[i];
+    }
+    float average = (float) total / (float) length;
+    printf("Average Temperature: %.2f\n", average);
+
+    //humidity
+    total = 0;
+    for(short i = 0; i < length; i++)
+    {
+      total = total + humidity[i];
+    }
+    average = (float) total / (float) length;
+    printf("Average Humidity: %.2f\n", average);
+  }
+  else
+  {
+    printf("Average Temperature: N/A\n");
+    printf("Average Humidity: N/A\n");
+  }
+
+}
+
+void min_temperature_humidity(short* temperature, short* humidity, short length)
+{
+  if(length > 0)
+  {
+    //temperature
+    short min = 32000;
+    for(short i = 0; i < length; i++)
+    {
+      if(temperature[i] < min)
+      {
+        min = temperature[i];
+      }
+    }
+    printf("Minimum Temperature: %d\n", min);
+
+    //humidity
+    min = 32000;
+    for(short i = 0; i < length; i++)
+    {
+      if(humidity[i] < min)
+      {
+        min = humidity[i];
+      }
+    }
+    printf("Minimum Humidity: %d\n", min);
+  }
+  else
+  {
+    printf("Minimum Temperature: N/A\n");
+    printf("Minimum Humidity: N/A\n");
+  }
+}
+
+void max_temperature_humidity(short* temperature, short* humidity, short length)
+{
+  if(length > 0)
+  {
+    //temperature
+    short max = 0;
+    for(short i = 0; i < length; i++)
+    {
+      if(temperature[i] > max)
+      {
+        max = temperature[i];
+      }
+    }
+    printf("Maximum Temperature: %d\n", max);
+
+    //humidity
+    max = 0;
+    for(short i = 0; i < length; i++)
+    {
+      if(humidity[i] > max)
+      {
+        max = humidity[i];
+      }
+    }
+    printf("Maximum Humidity: %d\n", max);
+  }
+  else
+  {
+    printf("Maximum Temperature: N/A\n");
+    printf("Maximum Humidity: N/A\n");
+  }
+}
+
+void display_log(short* temperature, short* humidity, short length)
+{
+  printf("Log: %d entries\n", length);
+  for(short i = 0; i < length; i++)
+  {
+    printf("Temperature: %d; Humidity: %d\n", temperature[i], humidity[i]);
+  }
+
+}
+
+int main(int argc, char *argv[])
+{
+  short running = 1; //set running status to true
+  short initialized = 0; //set log initialized status to false
+  short LogIncrement; //the increment size
+  while(running != 0)
+  {
+    char input_string[50]; //the array for input commands
+    scanf("%s", input_string); //take user input
+    int message;
+    sscanf(input_string, "%x", &message); //convert string hex to int
+    int type = message >> 26; //extract type by shifting 26 bits to right
+    type = type & 0x7; //clean type with mask
+    int temp = message & 0x1FFF; //extract temperature with mask
+    int  humi = message >> 13; //extract humidity by shifting 13 bits to right
+    humi = humi & 0x1FFF;  //clean humidity with mask
+    int increment = message & 0x3FFFFFF; //clean Logincrement with mask
+
+    switch(type)
+    {
+      case(0):
+        if(initialized == 0)
+        {
+          printf("Log Not Initialized\n");
+        }
+        else if(current_log_usage < current_log_size)
+        {
+          printf("Received Temperature: %d\n", temp);
+          printf("Received Humidity: %d\n", humi);
+          temperature[current_log_usage] = temp;
+          humidity[current_log_usage] = humi;
+          current_log_usage++;
+        }
+        else
+        {
+          current_log_size = current_log_size + LogIncrement;
+          temperature = realloc(temperature, current_log_size * sizeof(short));
+          humidity = realloc(humidity, current_log_size * sizeof(short));
+          printf("Log Size Expanded To: %d\n", current_log_size);
+          printf("Received Temperature: %d\n", temp);
+          printf("Received Humidity: %d\n", humi);
+          temperature[current_log_usage] = temp;
+          humidity[current_log_usage] = humi;
+          current_log_usage++;
+        }
+
+        break;
+
+      case(2):
+        if(initialized == 0)
+        {
+          printf("Log Not Initialized\n");
+        }
+        else
+        {
+          average_temperature_humidity(temperature, humidity, current_log_usage);
+        }
+        break;
+
+      case(3):
+        if(initialized == 0)
+        {
+          printf("Log Not Initialized\n");
+        }
+        else
+        {
+          min_temperature_humidity(temperature, humidity, current_log_usage);
+        }
+        break;
+
+      case(4):
+        if(initialized == 0)
+        {
+          printf("Log Not Initialized\n");
+        }
+        else
+        {
+          max_temperature_humidity(temperature, humidity, current_log_usage);
+        }
+        break;
+
+      case(5):
+        display_log(temperature, humidity, current_log_usage);
+        break;
+
+      case(6):
+        running = 0;
+        free(temperature);
+        free(humidity);
+        printf("Exiting...\n");
+        break;
+
+      case(7):
+        LogIncrement = increment;
+        if(current_log_size == 0)
+        {
+          current_log_size = current_log_size + LogIncrement;
+          temperature = (short*) malloc(current_log_size * sizeof(short));
+          humidity = (short*) malloc(current_log_size * sizeof(short));
+          printf("New Log Increment: %d\n", increment);
+          printf("Current Log Size: %d\n", current_log_size);
+          initialized = 1;
+        }
+        else
+        {
+          printf("New Log Increment: %d\n", increment);
+          printf("Current Log Size: %d\n", current_log_size);
+          initialized = 1;
+        }
+        break;
+
+      case(8):
+        printf("Log Not Initialized\n");
+        break;
+
+      default:
+        printf("Input Error\n");
+        break;
+    }
+
+  }
+}
